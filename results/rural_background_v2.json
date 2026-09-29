@@ -1,0 +1,15 @@
+{
+ "rural_night_lst_trend": 0.4082592391808118,
+ "rural_era5land_tmin_trend": 0.4169901679543888,
+ "n_rural_pixels": 62385,
+ "nex_cell_note": "ensemble median from the per-model UAE-area Tmin trends",
+ "rural_night_lst_trend_rounded": 0.41,
+ "rural_era5land_tmin_trend_rounded": 0.41,
+ "nex_ensemble_median_uae_tmin_trend": 0.414,
+ "nex_5_95": [
+  0.184,
+  0.629
+ ],
+ "nex_source": "per-model UAE-area Tmin trends 1995-2024 from the 28 NEX-GDDP-CMIP6 archives in nex/",
+ "note": "rural = UN Degree of Urbanisation class 11 in 1995 and 2020, <1% built-up in pixel and 10 km neighbourhood"
+}

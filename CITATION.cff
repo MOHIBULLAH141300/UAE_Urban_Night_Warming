@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the article below."
+title: "Urbanisation-driven nocturnal warming amplification in the United Arab Emirates: analysis pipeline and derived results"
+abstract: >-
+  Analysis pipeline, derived results and figures for a study measuring the nocturnal urban warming
+  increment across the United Arab Emirates over 1995-2024 from station records, satellite land-surface
+  temperature, built-up surface and morphology, and testing its representation in ERA5-Land and
+  NEX-GDDP-CMIP6.
+authors:
+  - family-names: Ullah
+    given-names: Mohib
+    affiliation: "Research and Excellence, Canadian University Dubai, Dubai, United Arab Emirates"
+  - family-names: Fenech
+    given-names: Adam
+    affiliation: "Research and Excellence, Canadian University Dubai, Dubai, United Arab Emirates"
+    email: adam.fenech@cud.ac.ae
+  - family-names: Scott
+    given-names: Dan
+    affiliation: "Waterloo Climate Institute, University of Waterloo, Waterloo, Ontario, Canada"
+  - family-names: Wang
+    given-names: Xander
+    affiliation: "School of Climate Change and Adaptation, University of Prince Edward Island, Charlottetown, Canada"
+  - family-names: Gordon
+    given-names: Ross
+    affiliation: "UTS Business School, University of Technology Sydney, Ultimo, New South Wales, Australia"
+license: CC-BY-4.0
+keywords:
+  - urban heat island
+  - nocturnal warming
+  - urban expansion
+  - land surface temperature
+  - ERA5-Land
+  - hot desert cities
+version: "1.0.0"
+date-released: "2026-09-29"
+repository-code: "https://github.com/MOHIBULLAH141300/UAE_Urban_Night_Warming"
