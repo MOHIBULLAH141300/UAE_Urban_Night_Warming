@@ -71,9 +71,9 @@ BU=json.load(open(BJ))
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':8.5,'axes.linewidth':0.6,
                      'axes.titlesize':9.5,'axes.titleweight':'bold','savefig.dpi':600})
 SEA='#dfe9f2'; OLD='#b9b9b9'; UCC='#1a9850'
-fig=plt.figure(figsize=(7.2,7.0))
+fig=plt.figure(figsize=(7.48,7.3))
 gs=fig.add_gridspec(2,2,height_ratios=[2.55,1.0],width_ratios=[1.12,1.0],
-                    hspace=0.30,wspace=0.24,left=0.075,right=0.975,top=0.955,bottom=0.075)
+                    hspace=0.30,wspace=0.24,left=0.072,right=0.985,top=0.955,bottom=0.075)
 a=fig.add_subplot(gs[0,:]); a.set_facecolor(SEA)
 a.imshow(np.where(np.isfinite(bf95),1.0,np.nan),extent=ext,cmap='Greys',vmin=0,vmax=6,interpolation='nearest')
 a.imshow(np.where(bf95>=0.05,1.0,np.nan),extent=ext,cmap=matplotlib.colors.ListedColormap([OLD]),interpolation='nearest')
@@ -90,19 +90,34 @@ a.set_xlabel('Longitude (°E)'); a.set_ylabel('Latitude (°N)')
 a.set_title('a   Urban growth 1995–2020 and the station network',loc='left')
 # scale bar
 km=100.0; dlon=km/(111.32*np.cos(np.deg2rad(23.2)))
-a.plot([55.05,55.05+dlon],[22.78,22.78],color='k',lw=2,solid_capstyle='butt',zorder=8)
-a.text(55.05+dlon/2,22.86,'100 km',ha='center',fontsize=7,zorder=8)
-# locator inset
-ins=a.inset_axes([0.012,0.605,0.235,0.375])
-ins.set_facecolor(SEA)
-ins.imshow(np.where(land>0,1.0,np.nan),extent=[x0,x1,y0,y1],
-           cmap=matplotlib.colors.ListedColormap(['#ede8df']),interpolation='nearest')
-for r in g0: ins.fill(*zip(*r),color='#7a1f5c',lw=0,zorder=3)
-ins.add_patch(Rectangle((51.4,22.5),5.15,3.7,fill=False,ec='#7a1f5c',lw=0.9,zorder=4))
-ins.text(51.0,20.6,'UAE',fontsize=7,weight='bold',color='#7a1f5c',ha='center',zorder=5)
-ins.text(52.2,26.8,'Arabian\nGulf',fontsize=6,style='italic',color='#41729f',ha='center',va='center',zorder=5)
-ins.set_xlim(x0,x1); ins.set_ylim(y0,y1); ins.set_xticks([]); ins.set_yticks([])
+a.plot([52.15,52.15+dlon],[22.80,22.80],color='k',lw=2,solid_capstyle='butt',zorder=8)
+a.text(52.15+dlon/2,22.88,'100 km',ha='center',fontsize=7,zorder=8)
+# locator inset (Gulf region, Natural Earth 1:50m)
+import json as _json
+CT=_json.load(open(os.path.expanduser('~/ghs/gulf_countries.json')))
+ins=a.inset_axes([0.008,0.555,0.305,0.435])
+ins.set_facecolor('#cfe0ef')
+for iso,v in CT.items():
+    for r in v['rings']:
+        xs=[c[0] for c in r]; ys=[c[1] for c in r]
+        ins.fill(xs,ys,color='#ece7de',lw=0,zorder=1)
+        ins.plot(xs,ys,color='0.55',lw=0.35,zorder=2)
+for r in [rr for rr in CT['ARE']['rings']]:
+    xs=[c[0] for c in r]; ys=[c[1] for c in r]
+    ins.fill(xs,ys,color='#f3c0b8',lw=0,zorder=3); ins.plot(xs,ys,color='#b3251b',lw=0.8,zorder=4)
+LBL=[('IRAN',54.0,29.6,6.2,'k'),('SAUDI ARABIA',46.3,22.6,6.2,'k'),('OMAN',57.6,20.6,6.2,'k'),
+     ('QATAR',50.0,25.9,5.6,'k'),('YEMEN',46.2,15.0,6.2,'k'),('U.A.E.',55.6,23.2,5.6,'#b3251b')]
+for t,x,y,fs,c in LBL:
+    ins.text(x,y,t,fontsize=fs,weight='bold',color=c,ha='center',va='center',zorder=6)
+ins.text(50.9,28.4,'Persian / Arabian Gulf',fontsize=5.4,style='italic',color='#2e6da4',ha='center',va='center',rotation=-30,zorder=6)
+ins.text(59.6,24.4,'Gulf of\nOman',fontsize=5.4,style='italic',color='#2e6da4',ha='center',va='center',zorder=6)
+ins.add_patch(Rectangle((51.4,22.5),5.15,3.7,fill=False,ec='k',lw=0.9,zorder=7))
+ins.set_xlim(43.5,61.5); ins.set_ylim(12.5,31.5); ins.set_xticks([]); ins.set_yticks([])
 for s_ in ins.spines.values(): s_.set_linewidth(0.7)
+# north arrow on the main map
+a.annotate('', xy=(53.62,25.92), xytext=(53.62,25.45),
+           arrowprops=dict(arrowstyle='-|>',color='k',lw=1.1))
+a.text(53.62,25.98,'N',fontsize=8,weight='bold',ha='center',va='bottom')
 # panel b
 b=fig.add_subplot(gs[1,0])
 ep=BU['ep']; km2=BU['km2']; ucv=BU['urban_centre']

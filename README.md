@@ -1,8 +1,8 @@
-# Urbanisation-driven nocturnal warming amplification: Evidence from the United Arab Emirates
+# Urbanisation-driven nocturnal warming amplification in rapidly expanding arid cities
 
 Analysis pipeline, derived results and figures for the manuscript:
 
-**Urbanisation-driven nocturnal warming amplification: Evidence from the United Arab Emirates**
+**Urbanisation-driven nocturnal warming amplification in rapidly expanding arid cities**
 
 Mohib Ullah, Adam Fenech, Dan Scott, Xander Wang, Ross Gordon
 Submitted to *Urban Climate* (2026).
@@ -25,7 +25,7 @@ undeveloped, including a pre-conversion trend test.
 | Quantity | Value |
 |---|---|
 | Station Tmin trend 1995–2024 | 1.31 Dubai, 1.14 Abu Dhabi, 1.02 Sharjah °C decade⁻¹; 0.13–0.20 where little building occurred |
-| Night LST dose–response | +0.50 °C decade⁻¹ per 10 pp added built-up (95% CI 0.42–0.58) |
+| Night LST exposure–response | +0.50 °C decade⁻¹ per 10 pp added built-up (95% CI 0.42–0.58) |
 | Day LST | −0.19 °C decade⁻¹; ERA5-Land −0.01 |
 | Conversion event study | +0.66 °C at night in years 3–10 after conversion; no day-time response |
 | Rural background | 0.41 (rural LST) = 0.41 (ERA5-Land) = 0.41 (CMIP6 ensemble median) °C decade⁻¹ |
@@ -38,7 +38,7 @@ undeveloped, including a pre-conversion trend test.
 `layers6.py` (raster stack: Landsat NDVI/albedo, DMSP lights, SMOD epochs) → `cci_annual30.py`
 (CCI monthly LST to annual and seasonal anomalies) → `v2_grid.py` (pixel Theil–Sen trends,
 Mann–Kendall with Hamed–Rao, Benjamini–Hochberg FDR) → `v2_dose.py` (UN-rural reference, coast-matched
-dose–response) → `v2_station.py` (station trends, ETCCDI indices, Pettitt screen) → `v2_event4.py`
+exposure–response) → `v2_station.py` (station trends, ETCCDI indices, Pettitt screen) → `v2_event4.py`
 (matched conversion event study with spatial-block bootstrap) → `v2_era.py` (sensor-era slope test) →
 `v2_morph.py`, `v2_morphreg.py`, `v2_lcz.py` (urban form, building height, Local Climate Zones) →
 `v2_uncert.py` (uncertainty decomposition) → `v2_future2.py` (projection to 2050) →
@@ -87,5 +87,5 @@ CC BY 4.0 (see `LICENSE`).
 
 ```
 Ullah, M., Fenech, A., Scott, D., Wang, X., Gordon, R. (2026). Urbanisation-driven nocturnal warming
-amplification: evidence from the United Arab Emirates. Urban Climate (submitted).
+amplification in rapidly expanding arid cities. Urban Climate (submitted).
 ```
