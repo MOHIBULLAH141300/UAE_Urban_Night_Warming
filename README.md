@@ -42,7 +42,8 @@ exposure–response) → `v2_station.py` (station trends, ETCCDI indices, Pettit
 (matched conversion event study with spatial-block bootstrap) → `v2_era.py` (sensor-era slope test) →
 `v2_morph.py`, `v2_morphreg.py`, `v2_lcz.py` (urban form, building height, Local Climate Zones) →
 `v2_uncert.py` (uncertainty decomposition) → `v2_future2.py` (projection to 2050) →
-`figs_v2.py`, `fig_new.py`, `fig8.py` (figures) and `tp_text.py`, `tp_build.py` (manuscript assembly).
+`figs_v2.py`, `fig_new.py` and the figure-specific scripts (figures), and `tp_text.py`, `tp_build.py`
+(manuscript assembly).
 `GEE_LCZ_UAE.js` exports the Local Climate Zone layer from Google Earth Engine.
 
 ### `results/` — every number quoted in the manuscript
@@ -59,8 +60,10 @@ temperature record (Copernicus Climate Data Store); GHS-BUILT-S, GHS-BUILT-H and
 (European Commission Joint Research Centre); MODIS MOD13A2 and MCD43A3 and Landsat Collection 2
 (NASA/USGS); DMSP-OLS and VIIRS night-time lights (NOAA); ERA5-Land (Copernicus Climate Data Store);
 NEX-GDDP-CMIP6 (NASA Center for Climate Simulation); and GADM 4.1. The gridded source archives are too
-large to deposit; the intermediate stacks `layers.npz` and `cci_annual30.npz` are rebuilt by the first
-two scripts and are available from the corresponding author on request.
+large to deposit. The source-derived base raster stack required by `layers6.py` and the resulting
+intermediate arrays are available from the corresponding author on request, subject to source-data
+licensing. Command-line options in `layers6.py` and `fig01_study_area_v3.py` replace machine-specific
+paths and identify the required local source archives.
 
 ## Reproducibility
 
@@ -68,6 +71,10 @@ Trends use the Theil–Sen slope with Mann–Kendall testing (Hamed–Rao correc
 false-discovery control; uncertainty uses a moving-block bootstrap for stations, a spatial block
 bootstrap over 0.25° blocks for pixels, and cluster-robust standard errors for the regressions. All
 resampling, bootstrap and permutation procedures use the fixed random seed **20260713**.
+
+The repository reproduces the reported analyses from the documented intermediate inputs. Rebuilding
+the source-derived raster inputs requires downloading the public archives listed above and supplying
+their local locations through the command-line options documented by each preprocessing script.
 
 Conventions: trend period 1995–2024 (WMO 30 years); normals 1991–2020 (WMO-No. 1203), satellite LST
 1995–2020; ETCCDI TN90p, TR and TN30; IPCC AR6 baseline 1995–2014 with SSP1-2.6, SSP2-4.5, SSP3-7.0

@@ -1,20 +1,16 @@
-# Temperature Paper A — urban night-time warming in the UAE
+# Temperature Paper A - urban night-time warming in the UAE
 
-Target journal: Urban Climate (Elsevier), Research Article.
+Target journal: *Urban Climate* (Elsevier), Research Article.
 
-## What is here
+## Repository contents
 
-    Temperature_Paper_A_Urban_Night_Warming.docx   main manuscript (7 figures, 5 tables)
-    Temperature_Paper_A_Urban_Night_Warming.pdf    the same, for reading and circulation
-    Supplementary_Information_TemperaturePaperA.docx  Figures S1-S3 and Tables S1-S7
-    Supplementary_Information_TemperaturePaperA.pdf   the same, for reading and circulation
-    Highlights_TemperaturePaperA.docx              five Elsevier-compliant highlights
-    Response_to_DS_comments_TempPaperA.docx        point-by-point response to Daniel Scott's comments C0-C13
-    figures/                                       Figure1.png .. Figure8.png at 300 dpi
-    results/                                       every number in the manuscript, as produced by the scripts
-    scripts/                                       the analysis pipeline, in the order it runs
-    Urban_Climate_submission_READY/                clean journal package (main text, SI,
-                                                   highlights, main figures and review PDFs)
+    01_Main_Manuscript.pdf   reading copy of the submitted manuscript
+    figures/                 Figures 1-7 and Supplementary Figures S1-S3
+    results/                 derived tables, statistics and quality-control outputs
+    code/                    analysis, figure and manuscript-generation scripts
+
+The submitted main manuscript contains seven figures and four tables. The Supplementary Information
+contains Figures S1-S3 and Tables S1-S9.
 
 ## The paper in one line
 
@@ -51,9 +47,15 @@ growth will enlarge.
 
 ## Running the pipeline
 
-The scripts expect layers.npz and cci_annual30.npz in the working directory.
+The source archives are not redistributed. Download them from the providers listed in the manuscript
+and pass their local locations through the command-line arguments. In particular,
+`fig01_study_area_v3.py --help` documents the GHS-BUILT-S, GHS-SMOD and GADM inputs used for Figure 1.
+`layers6.py` is an augmentation step: provide the source-derived base raster stack explicitly with
+`--base-layers`, together with `--gee-dir` and `--smod-dir`. The base stack must contain `lat`, `lon`,
+`uae` and `land`; it and other large intermediate arrays are available from the corresponding author
+on request, subject to source-data licensing.
 
-    layers6.py        adds Landsat NDVI/albedo, DMSP lights and SMOD epochs to the raster stack
+    layers6.py        adds Landsat NDVI/albedo, DMSP lights and SMOD epochs to a base raster stack
     cci_annual30.py   CCI monthly LST -> annual and seasonal anomalies
     v2_grid.py        pixel trends (Theil-Sen, MK/Hamed-Rao, BH-FDR) -> maps_v2.npz, pixels_v2.pkl
     v2_dose.py        UN-rural reference, coast-matched dose-response -> dose_v2.csv, reg_v2.json
@@ -83,9 +85,9 @@ The scripts expect layers.npz and cci_annual30.npz in the working directory.
   - The 2050 projection is a scenario calculation, conservative, and its surface-to-air
     translation rests on six stations and is not statistically resolved.
 
-## Still to do before submission
+## Reproducibility scope
 
-  - Author names, affiliations, corresponding-author email and CRediT contributions.
-  - Confirm the funding statement.
-  - Deposit the processed data and scripts, and add the DOI to Data availability.
-  - Decide whether Table 1 (datasets) stays in Methods or moves to Supplementary.
+All resampling, bootstrap and permutation procedures use the fixed random seed 20260713. The deposited
+scripts reproduce the reported analyses from the documented intermediate inputs. Full reconstruction
+from source archives requires the public datasets identified in the manuscript and local path options;
+no machine-specific paths are embedded in the Figure 1 script.

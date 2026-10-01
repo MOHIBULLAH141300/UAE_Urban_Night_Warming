@@ -1,4 +1,9 @@
-import os, json, sys, numpy as np, rasterio
+import argparse
+import json
+from pathlib import Path
+
+import numpy as np
+import rasterio
 from rasterio.warp import reproject, Resampling
 from rasterio.transform import from_origin
 import matplotlib; matplotlib.use('Agg')
@@ -6,18 +11,31 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import matplotlib.patheffects
 from matplotlib.patches import Patch, Rectangle
-sys.path.insert(0, os.path.expanduser('~/ghs'))
 from shp import read_shp
 
-H=os.path.expanduser('~')
-GB=f'{H}/mnt/ADAM DATA part2/newly donwloaded1/GHS_POP_Urban/UAE_clipped/GHS_BUILT_S/'
-SMOD=f'{H}/ghs/GHS_SMOD_E2020_GLOBE_R2023A_54009_1000_V1_0.tif'
-SHP=f'{H}/mnt/ADAM DATA PART 1/xin hong/UAE/'
-OUT=f'{H}/ghs/out'; os.makedirs(OUT, exist_ok=True)
-BJ=f'{H}/mnt/TEMPERATUTE PAPER A/TEMPERATURE PAPER ONLY/results/builtup_v2.json'
+ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser(description="Generate manuscript Figure 1 from documented source archives.")
+parser.add_argument("--ghs-built-dir", type=Path, required=True,
+                    help="Directory containing the GHS_BUILT_S 1995 and 2020 GeoTIFFs.")
+parser.add_argument("--smod-raster", type=Path, required=True,
+                    help="Path to the GHS-SMOD 2020 GeoTIFF.")
+parser.add_argument("--gadm-dir", type=Path, required=True,
+                    help="Directory containing gadm41_ARE_0.shp and gadm41_ARE_1.shp.")
+parser.add_argument("--builtup-results", type=Path,
+                    default=ROOT / "results" / "builtup_v2.json")
+parser.add_argument("--locator-json", type=Path,
+                    default=ROOT / "code" / "gulf_countries.json")
+parser.add_argument("--output-dir", type=Path, default=ROOT / "figures")
+args = parser.parse_args()
+
+GB=args.ghs_built_dir
+SMOD=args.smod_raster
+SHP=args.gadm_dir
+OUT=args.output_dir; OUT.mkdir(parents=True, exist_ok=True)
+BJ=args.builtup_results
 
 def builtup(year):
-    with rasterio.open(GB+f'GHS_BUILT_S_E{year}_GLOBE_R2023A_4326_30ss_V1_0.tif') as s:
+    with rasterio.open(GB/f'GHS_BUILT_S_E{year}_GLOBE_R2023A_4326_30ss_V1_0.tif') as s:
         a=s.read(1).astype('float64'); prof=s.profile; T=s.transform
     a[a<0]=np.nan
     return a, T, prof
@@ -40,7 +58,7 @@ uc=(uc>=30).astype(float)
 # restrict to UAE land using the GADM national outline
 from matplotlib.path import Path as MplPath
 from shp import read_shp as _rs
-_g0=[r for sh in _rs(SHP+'gadm41_ARE_0.shp') for r in sh]
+_g0=[r for sh in _rs(str(SHP/'gadm41_ARE_0.shp')) for r in sh]
 LO,LA=np.meshgrid(lon,lat); pts=np.column_stack([LO.ravel(),LA.ravel()])
 inside=np.zeros(pts.shape[0],bool)
 for r in _g0:
@@ -57,8 +75,8 @@ with rasterio.open(SMOD) as s:
     reproject(rasterio.band(s,1), loc, dst_transform=Tl, dst_crs='EPSG:4326', resampling=Resampling.nearest)
 land=(loc>=11).astype(float)
 
-g0=[r for sh in read_shp(SHP+'gadm41_ARE_0.shp') for r in sh]
-g1=[r for sh in read_shp(SHP+'gadm41_ARE_1.shp') for r in sh]
+g0=[r for sh in read_shp(str(SHP/'gadm41_ARE_0.shp')) for r in sh]
+g1=[r for sh in read_shp(str(SHP/'gadm41_ARE_1.shp')) for r in sh]
 ST=[('DXB','Dubai International',25.255,55.364,(-0.44,-0.17)),
     ('SHJ','Sharjah International',25.329,55.517,(0.09,0.10)),
     ('AUH','Abu Dhabi International',24.433,54.651,(0.10,-0.20)),
@@ -66,7 +84,8 @@ ST=[('DXB','Dubai International',25.255,55.364,(-0.44,-0.17)),
     ('AAN','Al Ain International',24.262,55.609,(0.07,0.05)),
     ('RAK','Ras Al Khaimah International',25.613,55.939,(-0.52,0.05)),
     ('FJR','Fujairah International',25.112,56.324,(-0.10,-0.22))]
-BU=json.load(open(BJ))
+with BJ.open(encoding='utf-8') as f:
+    BU=json.load(f)
 
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':8.5,'axes.linewidth':0.6,
                      'axes.titlesize':9.5,'axes.titleweight':'bold','savefig.dpi':600})
@@ -93,8 +112,8 @@ km=100.0; dlon=km/(111.32*np.cos(np.deg2rad(23.2)))
 a.plot([52.15,52.15+dlon],[22.80,22.80],color='k',lw=2,solid_capstyle='butt',zorder=8)
 a.text(52.15+dlon/2,22.88,'100 km',ha='center',fontsize=7,zorder=8)
 # locator inset (Gulf region, Natural Earth 1:50m)
-import json as _json
-CT=_json.load(open(os.path.expanduser('~/ghs/gulf_countries.json')))
+with args.locator_json.open(encoding='utf-8') as f:
+    CT=json.load(f)
 ins=a.inset_axes([0.008,0.555,0.305,0.435])
 ins.set_facecolor('#cfe0ef')
 for iso,v in CT.items():
@@ -144,6 +163,6 @@ h=[Patch(facecolor=OLD,edgecolor='none',label='Already \u22655% built up in 1995
    Patch(facecolor=SEA,edgecolor='0.6',label='Sea')]
 lg.legend(handles=h,loc='upper left',bbox_to_anchor=(0.0,0.68),frameon=False,fontsize=7.0,
           handlelength=1.5,labelspacing=0.40,borderpad=0)
-fig.savefig(f'{OUT}/Figure1.png',dpi=600,bbox_inches='tight')
-fig.savefig(f'{OUT}/Figure1.pdf',bbox_inches='tight')
+fig.savefig(OUT/'Figure1.png',dpi=600,bbox_inches='tight')
+fig.savefig(OUT/'Figure1.pdf',bbox_inches='tight')
 print('UAE built-up km2 1995/2020:', round(float(np.nansum(bf95*area))/1e6,1), round(float(np.nansum(bf20*area))/1e6,1))
